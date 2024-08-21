@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "365569131387",
+    "project_id": "auralens-1-c635c",
+    "storage_bucket": "auralens-1-c635c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:365569131387:android:e9b78db4aa12c14d0db3de",
+        "android_client_info": {
+          "package_name": "com.example.auralens"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCkUa_iXIGe_-mdZXCe-KrE9eaIx-3snBE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
