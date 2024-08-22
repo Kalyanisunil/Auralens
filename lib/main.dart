@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:auralens/homescreen.dart';
+import 'auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +19,12 @@ class Login extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: LoginPage(),
+      routes: {
+        //'/signup': (context) => SignUpPage(),
+        '/home': (context) => HomeScreen(),
+        '/login': (context) => LoginPage(),
+      },
+      initialRoute: '/login',
     );
   }
 }
@@ -37,6 +44,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Login'),
+        
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -80,14 +88,53 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 20.0),
               Center(
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    //testuser();
+                    //show loading alert
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          content: Row(
+                            children: [
+                              CircularProgressIndicator(),
+                              SizedBox(width: 20),
+                              Text("Logging in..."),
+                            ],
+                          ),
+                        );
+                      },
+                    );
                     if (_formKey.currentState!.validate()) {
                       // Navigate to HomeScreen on successful validation
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()),
-                      );
-                    }
+                      String status = await login(_emailController.text, _passwordController.text);
+                      Navigator.of(context).pop();
+                      if (status == 'Success') {
+                        Navigator.pushReplacementNamed(context, '/home');
+                      }
+                      //else show alertbox
+                      else {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text("Error"),
+                              content: Text(status),
+                              actions: [
+                                TextButton(
+                                  child: Text("OK"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    } else
+                      Navigator.of(context).pop();
                   },
                   child: Text('Login'),
                 ),
