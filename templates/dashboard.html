@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Lens - Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+        .dashboard-container {
+            max-width: 1200px;
+            margin-top: 50px;
+        }
+        .card {
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        .btn-primary {
+            background-color: #4a90e2;
+            border-color: #4a90e2;
+        }
+        .btn-primary:hover {
+            background-color: #357abd;
+            border-color: #357abd;
+        }
+    </style>
+</head>
+<body>
+<div class="container dashboard-container">
+    <h2 class="text-center mb-4">Aura Lens Admin Dashboard</h2>
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Register New User</h5>
+                    <p class="card-text">Add new users to the system.</p>
+                    <a href="/register" class="btn btn-primary">Go to Register Page</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">View Registered Users</h5>
+                    <p class="card-text">View and manage all registered users.</p>
+                    <a href="users" class="btn btn-primary">View Users</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
