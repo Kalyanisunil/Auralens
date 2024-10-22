@@ -1,72 +1,32 @@
-from flask import Flask, request, jsonify, redirect, url_for, render_template
-from flask import Flask, request, jsonify, render_template
-import firebase_admin
-from firebase_admin import credentials, auth
+from flask import Flask, request, jsonify
+import numpy as np
+import cv2
+import tensorflow as tf
 
-# Initialize Flask application
 app = Flask(__name__)
 
-# Initialize Firebase Admin SDK
-cred = credentials.Certificate('auralens-1-c635c-firebase-adminsdk-lmtmx-ce43ecf40c.json')  # Replace with the path to your Firebase service account key
-firebase_admin.initialize_app(cred)
+# Load the Keras model
+model = tf.keras.models.load_model("currency_recognition_model.h5")
 
-@app.route('/dashboard')
-def dashboard():
-    return render_template('dashboard.html')
 
-# Route to serve the HTML form for registration
-@app.route('/register', methods=['GET'])
-def register_page():
-    return render_template('register.html')
+def preprocess_image(image):
+    image = cv2.resize(image, (224, 224))  # Resize to model input size
+    image = image / 255.0  # Normalize to [0, 1]
+    image = np.expand_dims(image, axis=0)  # Add batch dimension
+    return image
 
-# Route for admin to register new users (Handles POST requests)
-@app.route('/register', methods=['POST'])
-def register_user():
-    try:
-        # Get data from the request
-        data = request.form  # Get form data submitted via POST
-        email = data.get('email')
-        password = data.get('password')
-        name = data.get('name')
 
-        # Check if all required fields are provided
-        if not email or not password or not name:
-            return jsonify({'error': 'Missing required fields'}), 400
+@app.route('/recognize', methods=['POST'])
+def recognize_currency():
+    file = request.files['image']
+    img = cv2.imdecode(np.frombuffer(file.read(), np.uint8), cv2.IMREAD_COLOR)
 
-        # Create a new user with the provided details
-        user = auth.create_user(
-            email=email,
-            password=password,
-            display_name=name
-        )
-        # return redirect(url_for('dashboard'))
-       
-        return redirect(url_for('dashboard'))
-   
+    input_data = preprocess_image(img)
+    predictions = model.predict(input_data)
+    predicted_class = int(np.argmax(predictions[0]))
 
-    except Exception as e:
-        return render_template('register.html', error=f'Error: {str(e)}')
-@app.route('/users', methods=['GET'])
-def list_users():
-    try:
-        # Fetch all users from Firebase
-        users = auth.list_users().iterate_all()
-        
-        # Prepare a list of users to send to the HTML template
-        user_list = []
-        for user in users:
-            user_list.append({
-                'uid': user.uid,
-                'email': user.email,
-                'display_name': user.display_name
-            })
+    return jsonify({'predicted_class': predicted_class})
 
-        # Render the users.html template with the user list
-        return render_template('users.html', users=user_list)
 
-    except Exception as e:
-        return f"An error occurred while fetching users: {str(e)}", 500
-
-# Start the Flask application
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)
